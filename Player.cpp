@@ -1,8 +1,10 @@
 #include "Player.h"
+#include "GameObject.h"
 #include <iostream>
 #include <glm\glm.hpp>
 
-Player::Player()
+
+Player::Player(float x, float y, float z, float startAngle)
 {
 
 	//schrijf hier de vertex-arrays
@@ -23,16 +25,28 @@ Player::Player()
 
 	createMesh(vertices,indices,12,12);
 
+	this->x = x;
+	this->y = y;
+	this->z = z;
+
+	rotationAngle = startAngle;
+	rotY = 1.0f;
 }
+
+bool tri = false;
 
 glm::mat4 Player::Update(glm::mat4 model)
 {
-	//std::cout << "UPDATING PLAYER" << std::endl;
 
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+	if (abs(x) > 2.5f)
+	{
+		tri = !tri;
+	}
 
-	return model;
+	if (tri) { x += 0.001f; y += 0.001f; }else{ x -= 0.001f; y -= 0.001f;}
+
+
+	return Transform(model, x, y, z, scaleX, scaleY, scaleZ, rotX, rotY, rotZ, rotationAngle);
 }
 
 

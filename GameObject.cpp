@@ -1,7 +1,6 @@
-#include <iostream>
 
-#include "Player.h"
 #include "GameObject.h"
+#include <iostream>
 #include <glm\glm.hpp>
 
 GameObject::GameObject()
@@ -10,6 +9,15 @@ GameObject::GameObject()
 	VBO = 0;
 	IBO = 0;
 	indexCount = 0;
+
+	scaleX = 0.4f;
+	scaleY = 0.4f;
+	scaleZ = 1.0f;
+
+	rotX = 0.0f;
+	rotY = 0.0f;
+	rotZ = 0.0f;
+
 }
 
 void GameObject::createMesh(GLfloat * vertices, unsigned int * indices, unsigned int numOfVertices, unsigned int numOfIndices)
@@ -31,6 +39,7 @@ void GameObject::createMesh(GLfloat * vertices, unsigned int * indices, unsigned
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 3, 0);
 	glEnableVertexAttribArray(0);
 
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -50,6 +59,15 @@ void GameObject::renderMesh()
 glm::mat4 GameObject::Update(glm::mat4 model)
 {
 	std::cout << "updating from base class (this isn't supposed to happen)" << std::endl;
+	return model;
+}
+
+glm::mat4 GameObject::Transform(glm::mat4 model, float x, float y, float z, float scaleX, float scaleY, float scaleZ, float rotX, float rotY, float rotZ, float angle)
+{
+	model = glm::translate(model, glm::vec3(x, y, z));
+	if (angle > 360.0f) { angle -= 360.0f; }else if (angle < 0.0f) { angle += 360.0f; }
+	model = glm::rotate(model, angle * toRadians, glm::vec3(rotX, rotY, rotZ));
+	model = glm::scale(model, glm::vec3(scaleX, scaleY, scaleZ));
 	return model;
 }
 

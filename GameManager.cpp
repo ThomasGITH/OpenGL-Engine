@@ -10,15 +10,12 @@ GameManager::GameManager()
 }
 
 static const char* vShader = "Shaders/shader.vert";
-
 static const char* fShader = "Shaders/shader.frag";
 
 GameManager::GameManager(GLint bufferWidth, GLint bufferHeight)
 {
-	
-	player = new Player;
-
 	_gameObjList.push_back(player);
+	_gameObjList.push_back(playerTwo);
 	
 	CreateShaders();
 	
@@ -29,13 +26,14 @@ GameManager::GameManager(GLint bufferWidth, GLint bufferHeight)
 
 void GameManager::Update()
 {
-
 	shaderList[0].useShader();
 
 	uniformModel = shaderList[0].GetModelLocation();
 	uniformProjection = shaderList[0].GetProjectionLocation();
-	uniformView = shaderList[0].GetViewLocation();
+	//uniformView = shaderList[0].GetViewLocation();
 
+	player->rotationAngle -= 0.1f;
+	playerTwo->rotationAngle += 0.3f;
 
 	// UPDATE ALL THE GAME OBJECTS:
 	if (_gameObjList.size() > 0)
@@ -44,10 +42,7 @@ void GameManager::Update()
 		{
 			outputModel = _gameObjList[i]->Update(inputModel);
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(outputModel));
-			if (i == 0)
-			{
-				glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-			}
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 			_gameObjList[i]->renderMesh();
 			outputModel = glm::mat4();
 		}

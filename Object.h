@@ -1,20 +1,19 @@
-
 #pragma once
-
-#include "GameObject.h"
+//#include "GameObject.h"
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
 
-class Player : public GameObject
+/*class Object : public GameObject
 {
 public:
-	Player(float x, float y, float z, float startAngle);
+	Object();
 
 	virtual glm::mat4 Update(glm::mat4 model) override;
 
-	~Player();
+	~Object();
 private:
 
 };
 
+*/
