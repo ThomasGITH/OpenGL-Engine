@@ -1,0 +1,10 @@
+﻿  GameManager.cpp
+  GameObject.cpp
+  main.cpp
+  Player.cpp
+  Shader.cpp
+  Test.cpp
+  Generating code
+  All 362 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  OpenGLGame.vcxproj -> c:\users\tlins\documents\visual studio 2017\Projects\OpenGLGame\Release\OpenGLGame.exe

@@ -4,49 +4,54 @@
 #include <glm\glm.hpp>
 
 
-Player::Player(float x, float y, float z, float startAngle)
+Player::Player(glm::vec3 position, float startAngle)
 {
 
-	//schrijf hier de vertex-arrays
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
+	this->position = position;
+	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	yaw = -60.0f;
+	pitch = 0.0f;
 
-	GLfloat vertices[] = {
-		//	x      y      z	
-		-1.0f, -1.0f, -0.6f,
-		0.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, -0.6f,
-		0.0f, 1.0f, 0.0f
-	};
+	moveSpeed = 5.0f;
+	turnSpeed = 0.1f;
 
-	createMesh(vertices,indices,12,12);
-
-	this->x = x;
-	this->y = y;
-	this->z = z;
-
-	rotationAngle = startAngle;
-	rotY = 1.0f;
+	enableCameraCalculations = true;
+	invertMouse = false;
+	calculateCameraView();
 }
 
-bool tri = false;
 
-glm::mat4 Player::Update(glm::mat4 model)
+glm::mat4 Player::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
 {
+	GLfloat velocity = moveSpeed * deltaTime;
 
-	if (abs(x) > 2.5f)
+	if (keys[GLFW_KEY_W])
 	{
-		tri = !tri;
+		position += front * velocity;
+	}
+	if (keys[GLFW_KEY_S])
+	{
+		position -= front * velocity;
+	}
+	if (keys[GLFW_KEY_A])
+	{
+		position -= right * velocity;
+	}
+	if (keys[GLFW_KEY_D])
+	{
+		position += right * velocity;
 	}
 
-	if (tri) { x += 0.001f; y += 0.001f; }else{ x -= 0.001f; y -= 0.001f;}
+	if (keys[GLFW_KEY_E])
+	{
+		position += up * velocity;
+	}
+	if (keys[GLFW_KEY_Q])
+	{
+		position -= up * velocity;
+	}
 
-
-	return Transform(model, x, y, z, scaleX, scaleY, scaleZ, rotX, rotY, rotZ, rotationAngle);
+	return Transform(model, position, scale, rotation, rotationAngle);
 }
 
 

@@ -9,9 +9,10 @@
 class Test : public GameObject
 {
 public:
-	Test();
+	Test(){}
+	Test(glm::vec3 position, float startAngle);
 
-	virtual glm::mat4 Update(glm::mat4 model) override;
+	virtual glm::mat4 Update(glm::mat4 model, bool* keys, GLfloat deltaTime) override;
 
 	~Test();
 private:

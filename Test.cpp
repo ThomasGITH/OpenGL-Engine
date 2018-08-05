@@ -1,6 +1,10 @@
 #include "Test.h"
+#include "GameObject.h"
+#include <iostream>
+#include <glm\glm.hpp>
 
-Test::Test()
+
+Test::Test(glm::vec3 position, float startAngle)
 {
 
 	//schrijf hier de vertex-arrays
@@ -12,35 +16,25 @@ Test::Test()
 	};
 
 	GLfloat vertices[] = {
-		//	x      y      z	
-		-1.0f, -1.0f, -0.6f,
-		0.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, -0.6f,
-		0.0f, 1.0f, 0.0f
+		//	x      y      z		  u    v	
+		-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,
+		0.0f, -1.0f, 1.0f,		0.5f, 0.0f,
+		1.0f, -1.0f, -0.6f,		1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,		0.5f, 1.0f
 	};
 
-	createMesh(vertices, indices, 12, 12);
+	createModel(vertices, "Textures/dirt.png", indices, 12, 12);
 
+	this->position = position;
+
+	rotationAngle = startAngle;
+	rotation.y = 1.0f;
 }
 
-float angle;
-
-glm::mat4 Test::Update(glm::mat4 model)
+glm::mat4 Test::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
 {
 
-	angle += 0.1f;
-	if (angle > 360)
-	{
-		angle -= 360;
-	}
-
-	std::cout << "test" << std::endl;
-
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -2.5f));
-	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-	model = glm::rotate(model, angle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-
-	return model;
+	return Transform(model, position, scale, rotation, rotationAngle);
 }
 
 

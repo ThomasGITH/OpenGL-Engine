@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +12,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "GameManager.h"
+#include "Input.h"
 
 GLFWwindow* mainWindow;
 GLint width = 1366, height = 768, bufferWidth, bufferHeight;
@@ -56,9 +59,9 @@ int main()
 
 	glViewport(0, 0, bufferWidth, bufferHeight);
 
-	GameManager gameManager(bufferWidth, bufferHeight);
+	GameManager gameManager(bufferWidth, bufferHeight, mainWindow);
 
-	while (!glfwWindowShouldClose(mainWindow))
+	while (!gameManager.inputManager->getShouldClose())
 	{
 		glfwPollEvents();
 
