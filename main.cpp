@@ -32,7 +32,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	mainWindow = glfwCreateWindow(width, height, "Framework Window", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Linssen Engine", NULL, NULL);
 	if (!mainWindow)
 	{
 		printf("Error creating window");
@@ -65,7 +65,7 @@ int main()
 	{
 		glfwPollEvents();
 
-		glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.50f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		gameManager.Update();

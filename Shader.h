@@ -21,9 +21,15 @@ public:
 	GLuint GetProjectionLocation();
 	GLuint GetModelLocation();
 	GLuint GetViewLocation();
+	GLuint GetAmbientColourLocation();
+	GLuint GetAmbientIntensityLocation();
+	GLuint GetDirectionLocation();
+	GLuint GetDiffuseIntensityLocation();
+
 
 	~Shader();
 private:
-	GLuint shaderID, uniformProjection, uniformModel, uniformView;
+	GLuint shaderID, uniformProjection, uniformModel, uniformView, uniformAmbientColour, uniformAmbientIntensity,
+		uniformDirection, uniformDiffuseIntensity;
 };
 
