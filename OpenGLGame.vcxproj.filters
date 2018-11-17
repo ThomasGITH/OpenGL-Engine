@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\ObjectHeaders">
+      <UniqueIdentifier>{95a4bd59-a811-4c5d-8382-d4ab5f59be06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ObjectCPP%27s">
+      <UniqueIdentifier>{227c7765-a05b-4a46-81e6-f5a77a35e7c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentCPP%27s">
+      <UniqueIdentifier>{154e73e9-a883-4dd1-97f6-bed48178c546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ComponentHeaders">
+      <UniqueIdentifier>{a80a3d30-452d-4154-8ed3-f8abbc81148c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,13 +36,7 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
@@ -39,11 +45,29 @@
     <ClCompile Include="Locator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sun.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\ComponentCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\ComponentCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Lantern.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Flashlight.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,13 +77,7 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
@@ -68,11 +86,32 @@
     <ClInclude Include="Locator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sun.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
     <ClInclude Include="Light.h">
+      <Filter>Header Files\ComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\ComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Commons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sun.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Lantern.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Flashlight.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

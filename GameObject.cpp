@@ -15,21 +15,25 @@ GameObject::GameObject()
 	scale.y = 0.4f;
 	scale.z = 0.4f;
 
-	rotation.x = 0.0f;
-	rotation.y = 0.0f;
-	rotation.z = 0.0f;
-
-	enableCameraCalculations = false;
+	enableMouseCameraCalculations = false;
 	invertMouse = false;
+	disableCameraClamp = false;
+	isPointLight = false;
+
+	rotation.x = 0;
+	rotation.y = 0;
+	rotation.z = 0;
 
 	textureID = 0;
 	textureWidth = 0;
 	textureHeight = 0;
 	textureBitDepth = 0;
 	textureLocation = 0;
+
+	moveSpeed = 2.5f;
 }
 
-void GameObject::createModel(GLfloat * vertices, char* textureLocation, unsigned int * indices, unsigned int numOfVertices, unsigned int numOfIndices)
+void GameObject::createModel(GLfloat * vertices, char* textureLocation, unsigned int * indices, unsigned int numOfVertices, unsigned int numOfIndices, bool calculateNormals)
 {
 	this->textureLocation = textureLocation;
 	
@@ -40,7 +44,10 @@ void GameObject::createModel(GLfloat * vertices, char* textureLocation, unsigned
 		return;
 	}
 
-	vertices = calcAverageNormals(indices, numOfIndices, vertices, numOfVertices, 8, 5);
+	if(calculateNormals)
+	{
+		vertices = calcAverageNormals(indices, numOfIndices, vertices, numOfVertices, 8, 5);
+	}
 
 	indexCount = numOfIndices;
 
@@ -128,20 +135,41 @@ GLfloat* GameObject::calcAverageNormals(unsigned int * indices, unsigned int ind
 	return vertices;
 }
 
-glm::mat4 GameObject::Transform(glm::mat4 model, glm::vec3 position, glm::vec3 scale, glm::vec3 rotation, float angle)
+glm::mat4 GameObject::Transform(glm::mat4 model, glm::vec3 position, glm::vec3 scale, glm::vec3 eulerAngle)
 {
 	model = glm::translate(model, position);
-	if (angle > 360.0f) { angle -= 360.0f; }else if (angle < 0.0f) { angle += 360.0f; }
-	model = glm::rotate(model, angle * toRadians, rotation);
+
+	if (!enableMouseCameraCalculations) {
+		if (rotation.y < 0) { rotation.y += 360; } else if (rotation.y > 360) { rotation.y -= 360; }
+		if (rotation.x < 0) { rotation.x += 360; } else if (rotation.x > 360) { rotation.x -= 360; }
+		if (rotation.z < 0) { rotation.z += 360; } else if (rotation.z > 360) { rotation.z -= 360; }
+	}
+	
+	glm::mat4 rotationMatrix = glm::toMat4(glm::quat(glm::radians(eulerAngle)));
+
+	model *= rotationMatrix;
 	model = glm::scale(model, scale);
+
 	return model;
 }
 
-void GameObject::calculateCameraView()
+void GameObject::calculateMouseMovement(GLfloat mouseXChange, GLfloat mouseYChange)
 {
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	if (enableMouseCameraCalculations)
+	{
+		mouseXChange *= turnSpeed;
+		mouseYChange *= turnSpeed;
+		
+		rotation.x += mouseXChange;
+		rotation.y += mouseYChange;
+
+		rotation.y = disableCameraClamp ? rotation.y : glm::clamp(rotation.y, -89.0f, 89.0f);
+	}
+
+	//Calculate the front, right and up vectors (very important)
+	front.x = cos(glm::radians(rotation.x)) * cos(glm::radians(rotation.y));
+	front.y = sin(glm::radians(rotation.y));
+	front.z = sin(glm::radians(rotation.x)) * cos(glm::radians(rotation.y));
 	front = glm::normalize(front);
 
 	right = glm::normalize(glm::cross(front, worldUp));
@@ -150,43 +178,74 @@ void GameObject::calculateCameraView()
 	front.y = invertMouse ? front.y * -1 : front.y;
 }
 
-void GameObject::calculateMouseMovement(GLfloat xChange, GLfloat yChange)
-{
-	xChange *= turnSpeed;
-	yChange *= turnSpeed;
-	
-	yaw += xChange;
-	pitch += yChange;
-
-	pitch = glm::clamp(pitch, -89.0f, 89.0f);
-
-	if (enableCameraCalculations)
-	{
-		calculateCameraView();
-	}
-}
-
 glm::mat4 GameObject::getViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);
 }
 
-void GameObject::setUniformLocations(GLuint uniformAmbientColour, GLuint uniformAmbientIntensity, GLuint uniformDirection, GLuint uniformDiffuseIntensity)
+void GameObject::setUniformLocations(GLuint uniformAmbientColour, GLuint uniformAmbientIntensity, GLuint uniformDirection, GLuint uniformDiffuseIntensity, GLuint uniformSpecularIntensity, GLuint uniformShinyness)
 {
-	this->uniformAmbientColour = uniformAmbientColour;
+	this->uniformColour = uniformAmbientColour;
 	this->uniformAmbientIntensity = uniformAmbientIntensity;
 	this->uniformDirection = uniformDirection;
 	this->uniformDiffuseIntensity = uniformDiffuseIntensity;
+	this->uniformSpecularIntensity = uniformSpecularIntensity;
+	this->uniformShinyness = uniformShinyness;
+}
+
+void GameObject::setPointLightUniforms(GLuint uniformColour, GLuint uniformAmbientIntensity, GLuint uniformDiffuseIntensity, GLuint uniformPosition, GLuint uniformConstant, GLuint uniformLinear, GLuint uniformQuadrant)
+{
+	pointLight.uniformColour = uniformColour;
+	pointLight.uniformAmbientIntensity = uniformAmbientIntensity;
+	pointLight.uniformDiffuseIntensity = uniformDiffuseIntensity;
+	pointLight.uniformPosition = uniformPosition;
+	pointLight.uniformConstant = uniformConstant;
+	pointLight.uniformLinear = uniformLinear;
+	pointLight.uniformQuadrant = uniformQuadrant;
+}
+
+void GameObject::setSpotLightUniforms(GLuint uniformColour, GLuint uniformAmbientIntensity, GLuint uniformDiffuseIntensity, GLuint uniformPosition, GLuint uniformConstant, GLuint uniformLinear, GLuint uniformQuadrant, GLuint uniformEdge, GLuint uniformDirection)
+{
+	spotLight.uniformColour = uniformColour;
+	spotLight.uniformAmbientIntensity = uniformAmbientIntensity;
+	spotLight.uniformDiffuseIntensity = uniformDiffuseIntensity;
+	spotLight.uniformPosition = uniformPosition;
+	spotLight.uniformConstant = uniformConstant;
+	spotLight.uniformLinear = uniformLinear;
+	spotLight.uniformQuadrant = uniformQuadrant;
+	spotLight.uniformEdge = uniformEdge;
+	spotLight.uniformDirection = uniformDirection;
 }
 
 GLuint GameObject::getUniformLocation(uniform location)
 {
 	switch (location)
 	{
-	case AMBIENT_COLOUR: return uniformAmbientColour; break;
-	case AMBIENT_INTENSITY: return uniformAmbientIntensity; break;
-	case DIRECTION: return uniformDirection; break;
-	case DIFFUSE_INTENSITY: return uniformDiffuseIntensity; break;
+	case DL_COLOUR: return uniformColour; break;
+	case DL_AMBIENT_INTENSITY: return uniformAmbientIntensity; break;
+	case DL_DIRECTION: return uniformDirection; break;
+	case DL_DIFFUSE_INTENSITY: return uniformDiffuseIntensity; break;
+
+	case SPECULAR_INTENSITY: return uniformSpecularIntensity; break;
+	case SPECULAR_SHINYNESS: return uniformShinyness; break;
+
+	case POINT_COLOUR: return pointLight.uniformColour; break;
+	case POINT_AMBIENT_INTENSITY: return pointLight.uniformAmbientIntensity; break;
+	case POINT_DIFFUSE_INTENSITY: return pointLight.uniformDiffuseIntensity; break;
+	case POINT_POSITION: return pointLight.uniformPosition; break;
+	case POINT_CONSTANT: return pointLight.uniformConstant; break;
+	case POINT_LINEAR: return pointLight.uniformLinear; break;
+	case POINT_QUADRATIC: return pointLight.uniformQuadrant; break;
+
+	case SPOT_COLOUR: return spotLight.uniformColour; break;
+	case SPOT_AMBIENT_INTENSITY: return spotLight.uniformAmbientIntensity; break;
+	case SPOT_DIFFUSE_INTENSITY: return spotLight.uniformDiffuseIntensity; break;
+	case SPOT_POSITION: return spotLight.uniformPosition; break;
+	case SPOT_CONSTANT: return spotLight.uniformConstant; break;
+	case SPOT_LINEAR: return spotLight.uniformLinear; break;
+	case SPOT_QUADRATIC: return spotLight.uniformQuadrant; break;
+	case SPOT_EDGE: return spotLight.uniformEdge; break;
+	case SPOT_DIRECTION: return spotLight.uniformDirection; break;
 	default: break;
 	}
 }

@@ -10,22 +10,18 @@ Player::Player(glm::vec3 position, float startAngle)
 
 	this->position = position;
 	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	yaw = -60.0f;
-	pitch = 0.0f;
+	rotation.y = 0.0f; //pitch
+	rotation.x = -60.0f; //yaw
 
 	moveSpeed = 3.0f;
 	turnSpeed = 0.1f;
-
-	enableCameraCalculations = true;
-	calculateCameraView();
+	
+	enableMouseCameraCalculations = true;
 }
-
-bool t = true, y = true;
 
 glm::mat4 Player::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
-
 	
 	if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
 	{
@@ -53,9 +49,12 @@ glm::mat4 Player::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
 		position -= up * velocity;
 	}
 
+	if (keys[GLFW_KEY_O])
+	{
+		rotation.x += 5.0f;
+	}
 
-
-	return Transform(model, position, scale, rotation, rotationAngle);
+	return Transform(model, position, scale, rotation);
 }
 
 Player::~Player()

@@ -13,6 +13,7 @@ public:
 	static void AddGameObject(GameObject* object);
 	static void RemoveGameObject(int index);
 	static std::vector<GameObject*> GetObjectsOfType(GameObject* type);
+	static std::vector<GameObject*> GetGameObjectList();
 
 	~Locator();
 

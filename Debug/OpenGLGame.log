@@ -1,3 +1,4 @@
-﻿  Test.cpp
+﻿  Flashlight.cpp
+c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\flashlight.cpp(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  OpenGLGame.vcxproj -> C:\Users\tlins\documents\visual studio 2017\Projects\OpenGLGame\Debug\OpenGLGame.exe
+  OpenGLGame.vcxproj -> C:\Users\tlins\Documents\Visual Studio 2017\Projects\OpenGLGame\Debug\OpenGLGame.exe

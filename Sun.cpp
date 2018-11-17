@@ -1,8 +1,8 @@
 #include "Sun.h"
 
-Sun::Sun(glm::vec3 ambientColour, GLfloat ambientIntensity, glm::vec3 direction, GLfloat diffuseIntensity)
+Sun::Sun(glm::vec3 colour, GLfloat ambientIntensity, glm::vec3 direction, GLfloat diffuseIntensity)
 {
-	this->colour = ambientColour;
+	this->colour = colour;
 	this->ambientIntensity = ambientIntensity;
 
 	this->direction = direction;
@@ -13,10 +13,9 @@ Sun::Sun(glm::vec3 ambientColour, GLfloat ambientIntensity, glm::vec3 direction,
 
 glm::mat4 Sun::Update(glm::mat4 model, bool * keys, GLfloat deltaTime)
 {
-	useLight(getUniformLocation(AMBIENT_COLOUR), getUniformLocation(AMBIENT_INTENSITY), getUniformLocation(DIRECTION), getUniformLocation(DIFFUSE_INTENSITY));
-	return Transform(model, position, scale, rotation, rotationAngle);
+	useLight(getUniformLocation(DL_COLOUR), getUniformLocation(DL_AMBIENT_INTENSITY), getUniformLocation(DL_DIRECTION), getUniformLocation(DL_DIFFUSE_INTENSITY), NULL, NULL, NULL, NULL, NULL);
+	return Transform(model, position, scale, rotation);
 }
-
 
 Sun::~Sun()
 {

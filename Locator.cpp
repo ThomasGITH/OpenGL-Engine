@@ -48,6 +48,11 @@ std::vector<GameObject*> Locator::GetObjectsOfType(GameObject* type)
 	return objectList;
 }
 
+std::vector<GameObject*>Locator::GetGameObjectList()
+{
+	return GM->GetGameObjectList();
+}
+
 
 
 
