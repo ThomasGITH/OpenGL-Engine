@@ -11,10 +11,9 @@ Sun::Sun(glm::vec3 colour, GLfloat ambientIntensity, glm::vec3 direction, GLfloa
 	setLightType(DIRECTIONAL);
 }
 
-glm::mat4 Sun::Update(glm::mat4 model, bool * keys, GLfloat deltaTime)
+void Sun::Update(const bool * keys, const GLfloat& deltaTime)
 {
 	useLight(getUniformLocation(DL_COLOUR), getUniformLocation(DL_AMBIENT_INTENSITY), getUniformLocation(DL_DIRECTION), getUniformLocation(DL_DIFFUSE_INTENSITY), NULL, NULL, NULL, NULL, NULL);
-	return Transform(model, position, scale, rotation);
 }
 
 Sun::~Sun()

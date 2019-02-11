@@ -15,7 +15,7 @@ Lantern::Lantern(glm::vec3 position, glm::vec3 color, GLfloat constant, GLfloat 
 	setLightType(POINT);
 }
 
-glm::mat4 Lantern::Update(glm::mat4 model, bool * keys, GLfloat deltaTime)
+void Lantern::Update(const bool* keys, const GLfloat& deltaTime)
 {	
 
 	if (keys[GLFW_KEY_U])
@@ -30,7 +30,6 @@ glm::mat4 Lantern::Update(glm::mat4 model, bool * keys, GLfloat deltaTime)
 	LightPosition = position;
 	useLight(getUniformLocation(POINT_COLOUR), getUniformLocation(POINT_AMBIENT_INTENSITY), NULL, getUniformLocation(POINT_DIFFUSE_INTENSITY),
 		getUniformLocation(POINT_POSITION), getUniformLocation(POINT_CONSTANT), getUniformLocation(POINT_LINEAR), getUniformLocation(POINT_QUADRATIC), NULL);
-	return Transform(model, position, scale, rotation);
 }
 
 Lantern::~Lantern()

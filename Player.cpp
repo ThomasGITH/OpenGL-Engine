@@ -4,22 +4,22 @@
 #include <glm\glm.hpp>
 #include "Locator.h"
 
-
 Player::Player(glm::vec3 position, float startAngle)
 {
-
 	this->position = position;
 	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	rotation.y = 0.0f; //pitch
-	rotation.x = -60.0f; //yaw
+	rotation.y = -30.0f; //pitch
+	rotation.x = 0.0f; //yaw
 
 	moveSpeed = 3.0f;
 	turnSpeed = 0.1f;
 	
 	enableMouseCameraCalculations = true;
+
+	tag = "player";
 }
 
-glm::mat4 Player::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
+void Player::Update(const bool * keys, const GLfloat& deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
 	
@@ -44,6 +44,7 @@ glm::mat4 Player::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
 	{
 		position += up * velocity;
 	}
+
 	if (keys[GLFW_KEY_Q])
 	{
 		position -= up * velocity;
@@ -54,7 +55,12 @@ glm::mat4 Player::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
 		rotation.x += 5.0f;
 	}
 
-	return Transform(model, position, scale, rotation);
+	if (keys[GLFW_KEY_5])
+	{
+		GameObject& flash = Locator::FindObjectByTag("flashlight");
+		std::cout << flash.moveSpeed << std::endl;
+		Locator::RemoveGameObject("flashlight");
+	}
 }
 
 Player::~Player()

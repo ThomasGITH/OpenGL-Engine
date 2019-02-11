@@ -18,16 +18,19 @@ GameManager::GameManager(GLint bufferWidth, GLint bufferHeight, GLFWwindow* main
 	_gameObjList.push_back(otherTest);
 	_gameObjList.push_back(sun);
 	_gameObjList.push_back(lantern);
+
 	_gameObjList.push_back(platform);
+
 	_gameObjList.push_back(otherLantern);
 	_gameObjList.push_back(mySpotLight);
 	_gameObjList.push_back(flashLight);
+	_gameObjList.push_back(dragon);
 
 	inputManager = new Input(mainWindow);
 
 	CompileIndividualLights();
 	CreateShaders();
-	projection = glm::perspective(45.0f, (GLfloat)bufferWidth / bufferHeight, 0.1f, 100.0f);
+	projection = glm::perspective(70.0f, (GLfloat)bufferWidth / bufferHeight, 0.1f, 100.0f);
 }
 
 void GameManager::Update()
@@ -90,12 +93,13 @@ void GameManager::Update()
 
 		for (size_t i = 0; i < _gameObjList.size(); i++)
 		{
-			outputModel = _gameObjList[i]->Update(inputModel, inputManager->getKeys(), deltaTime);
+			_gameObjList[i]->Update(inputManager->getKeys(), deltaTime);
+			_gameObjList[i]->Transform(model);
 			_gameObjList[i]->calculateMouseMovement(inputManager->getXchange(), inputManager->getYchange());
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(outputModel));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			_gameObjList[i]->renderModel();
 			_gameObjList[i]->setUniformLocations(uniformDLColour, uniformDLAmbientIntensity, uniformDLDirection, uniformDLDiffuseIntensity, uniformSpecularIntensity, uniformShinyness);
-			outputModel = glm::mat4();
+			model = glm::mat4();
 		}
 	}
 
@@ -131,6 +135,13 @@ void GameManager::ClearHeap()
 	{
 		delete _gameObjList[i];
 	}
+
+	//delete &_gameObjList;
+		
+	//delete &shaderList[0];
+	
+	delete inputManager;
+
 }
 
 GameManager::~GameManager()

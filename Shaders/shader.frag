@@ -68,9 +68,13 @@ vec4 CalcLightByDirection(Light light, vec3 direction)
 	
 	if(diffuseFactor > 0.0f)
 	{
+		//Get the direction between the light-hitted fragment & the player's (eye)position
 		vec3 fragToEye = normalize(EyePosition - FragPos);
+
+		//"reflect" the ligh-ray around the normal using the light-source's direction
 		vec3 reflectedVertex = normalize(reflect(direction, normalize(Normal)));
 		
+		//Get 0 to 1 value using dot-product to calculate "how much" the player sees it
 		float specularFactor = dot(fragToEye, reflectedVertex);
 		if(specularFactor > 0.0f)
 		{
@@ -94,7 +98,9 @@ vec4 CalcPointLight(PointLight pLight)
 	direction = normalize(direction);
 	
 	vec4 colour = CalcLightByDirection(pLight.phong, direction);
-	float attenuation = pLight.quadratic * distance * distance +
+
+	//Attenuation formula, calculates a realistic linear dropoff
+	float attenuation = pLight.quadratic * pow(distance, 2) +
 						pLight.linear * distance +
 						pLight.constant;
 	

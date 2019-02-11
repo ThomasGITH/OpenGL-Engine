@@ -150,7 +150,7 @@ void Shader::processShader(const char* vertexCode, const char* fragmentCode)
 void Shader::addShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)
 {
 	GLuint theShader = glCreateShader(shaderType);
-
+	
 	const GLchar* theCode[1];
 	theCode[0] = shaderCode;
 
@@ -186,7 +186,7 @@ void Shader::clearShader()
 		glDeleteProgram(shaderID);
 		shaderID = 0;
 	}
-
+	
 	uniformModel = 0;
 	uniformProjection = 0;
 	uniformView = 0;

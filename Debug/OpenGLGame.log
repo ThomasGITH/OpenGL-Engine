@@ -1,4 +1,11 @@
-﻿  Flashlight.cpp
-c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\flashlight.cpp(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+﻿  GameManager.cpp
+c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\gamemanager.cpp(38): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+  Locator.cpp
+c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\locator.cpp(20): warning C4018: '>=': signed/unsigned mismatch
+c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\locator.cpp(30): warning C4018: '<': signed/unsigned mismatch
+c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\locator.cpp(49): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  Generating Code...
+c:\users\tlins\documents\visual studio 2017\projects\openglgame\openglgame\locator.cpp(60): warning C4715: 'Locator::FindObjectByTag': not all control paths return a value
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   OpenGLGame.vcxproj -> C:\Users\tlins\Documents\Visual Studio 2017\Projects\OpenGLGame\Debug\OpenGLGame.exe

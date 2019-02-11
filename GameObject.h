@@ -10,6 +10,12 @@
 #include<glm\gtc\quaternion.hpp>
 #include <glm\gtx\quaternion.hpp>
 #include <glm\gtx\euler_angles.hpp>
+#include "Mesh.h"
+#include "Texture.h"
+
+#include <assimp\Importer.hpp>
+#include <assimp\scene.h>
+#include <assimp\postprocess.h>
 
 class Locator;
 
@@ -18,7 +24,9 @@ class GameObject
 public:
 	GameObject();
 
-	virtual glm::mat4 Update(glm::mat4 model, bool* keys, GLfloat deltaTime) = 0;
+	void loadModel(const std::string & fileName);
+
+	virtual void Update(const bool* keys, const GLfloat& deltaTime) = 0;
 	void setUniformLocations(GLuint uniformAmbientColour, GLuint uniformAmbientIntensity, GLuint uniformDirection, GLuint uniformDiffuseLocation, GLuint uniformSpecularLocation, GLuint uniformShinyness);
 	void setPointLightUniforms(GLuint uniformColour, GLuint uniformAmbientIntensity,GLuint uniformDiffuseIntensity,GLuint uniformPosition,
 	GLuint uniformConstant, GLuint uniformLinear,GLuint uniformQuadrant);
@@ -32,17 +40,20 @@ public:
 	GLuint getUniformLocation(uniform location);
 	void calculateMouseMovement(GLfloat xChange, GLfloat yChange);
 
-	void createModel(GLfloat *vertices, char* textureLocation, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices, bool calculateNormals);
+	void createMeshFromScratch(GLfloat *vertices, char* textureLocation, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices, bool useAlphaTexture, bool calculateNormals);
 	void renderModel();
-	GLfloat* calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset);
 	void clearModel();
 
-	glm::mat4 Transform(glm::mat4 model, glm::vec3 position, glm::vec3 scale, glm::vec3 angleAxis);
+	void Transform(glm::mat4& model);
 	glm::vec3 position, rotation, scale, front, up, right, worldUp;
 	GLfloat yaw, pitch, moveSpeed, turnSpeed, rotationAngle;
 
 	bool enableMouseCameraCalculations, invertMouse, disableCameraClamp, isPointLight, isSpotLight;
 	bool tester = false;
+
+	bool testBool = false;
+
+	std::string tag;
 
 	struct PointLight
 	{
@@ -77,11 +88,19 @@ public:
 
 	~GameObject();
 private:
+
+	void LoadNode(aiNode * node, const aiScene * scene);
+	void LoadMesh(aiMesh * mesh, const aiScene * scene);
+	void LoadMaterials(const aiScene * scene);
+
 	GLuint VAO, VBO, IBO, textureID;
 	GLsizei indexCount;
 	const float toRadians = 3.14159265f / 180.0f;
 	char* textureLocation;
 
+	std::vector<Mesh*> rawMesh, meshList;
+	std::vector<Texture*> rawTexture, textureList;
+	std::vector<unsigned int> meshToTex;
 
 	int textureWidth, textureHeight, textureBitDepth;
 	GLuint uniformColour, uniformAmbientIntensity, uniformDirection, uniformDiffuseIntensity, uniformSpecularIntensity, uniformShinyness;

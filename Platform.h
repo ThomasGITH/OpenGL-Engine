@@ -9,7 +9,7 @@ public:
 	Platform(){}
 	Platform(glm::vec3 position);
 
-	glm::mat4 Update(glm::mat4 model, bool* keys, GLfloat deltaTime) override;
+	void Update(const bool* keys, const GLfloat& deltaTime) override;
 
 	~Platform();
 };

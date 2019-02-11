@@ -14,7 +14,7 @@ public:
 	Test(){}
 	Test(glm::vec3 position, float startAngle, char* textureLocation);
 
-	virtual glm::mat4 Update(glm::mat4 model, bool* keys, GLfloat deltaTime) override;
+	void Update(const bool* keys, const GLfloat& deltaTime) override;
 
 	~Test();
 private:

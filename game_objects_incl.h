@@ -1,0 +1,9 @@
+#pragma once
+#include "Player.h"
+#include "Test.h"
+#include "Sun.h"
+#include "Platform.h"
+#include "Light.h"
+#include "Lantern.h"
+#include "FlashLight.h"
+#include "Dragon.h"

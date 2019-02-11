@@ -16,14 +16,15 @@ Platform::Platform(glm::vec3 position)
 		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
 	};
 
-	setMaterialType(SHINY);
-	createModel(vertices, "Textures/dirt.png", indices, 32, 6, false);
+	scale *= 10;
+
+	setMaterialType(DULL);
+	createMeshFromScratch(vertices, "Textures/dirt.png", indices, 32, 6, true, false);
 }
 
-glm::mat4 Platform::Update(glm::mat4 model, bool * keys, GLfloat deltaTime)
+void Platform::Update(const bool * keys, const GLfloat& deltaTime)
 {
 	useMaterial(getUniformLocation(SPECULAR_INTENSITY), getUniformLocation(SPECULAR_SHINYNESS));
-	return Transform(model, position, scale, rotation);
 }
 
 Platform::~Platform()

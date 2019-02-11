@@ -1,4 +1,3 @@
-
 #include "GameObject.h"
 #include <iostream>
 #include <glm\glm.hpp>
@@ -11,9 +10,9 @@ GameObject::GameObject()
 	IBO = 0;
 	indexCount = 0;
 
-	scale.x = 0.4f;
-	scale.y = 0.4f;
-	scale.z = 0.4f;
+	scale.x = 0.04f;
+	scale.y = 0.04f;
+	scale.z = 0.04f;
 
 	enableMouseCameraCalculations = false;
 	invertMouse = false;
@@ -31,111 +30,166 @@ GameObject::GameObject()
 	textureLocation = 0;
 
 	moveSpeed = 2.5f;
+
+	front = glm::vec3(0.0f, 0.0f, 1.0f);
+	right = glm::vec3(1.0f, 0.0f, 0.0f);
+	up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	tag = "";
 }
 
-void GameObject::createModel(GLfloat * vertices, char* textureLocation, unsigned int * indices, unsigned int numOfVertices, unsigned int numOfIndices, bool calculateNormals)
+void GameObject::loadModel(const std::string &fileName)
 {
-	this->textureLocation = textureLocation;
+	Assimp::Importer importer;
+	const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 	
-	unsigned char *textureData = stbi_load(this->textureLocation, &textureWidth, &textureHeight, &textureBitDepth, 0);
-	if (!textureData)
+	if (!scene)
 	{
-		printf("Failed to find %s\n", this->textureLocation);
+		printf("Model (%s) failed to load: %s", fileName, importer.GetErrorString());
 		return;
 	}
 
-	if(calculateNormals)
+	LoadNode(scene->mRootNode, scene);
+
+	LoadMaterials(scene);
+}
+
+void GameObject::LoadNode(aiNode* node, const aiScene* scene)
+{
+	//Loops through the meshlist of the corresponding node
+	for (size_t i = 0; i < node->mNumMeshes; i++)
 	{
-		vertices = calcAverageNormals(indices, numOfIndices, vertices, numOfVertices, 8, 5);
+		//The node only stores the ID of the mesh, the scene itself stores the mesh.
+		LoadMesh(scene->mMeshes[node->mMeshes[i]], scene);
 	}
 
-	indexCount = numOfIndices;
+	//Loops through the meshlist of this node's child-nodes
+	for (size_t i = 0; i < node->mNumChildren; i++)
+	{
+		LoadNode(node->mChildren[i], scene);
+	}
+}
 
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+void GameObject::LoadMesh(aiMesh* mesh, const aiScene* scene)
+{
+	std::vector<GLfloat> vertices;
+	std::vector<unsigned int> indices;
 
-	glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * numOfIndices, indices, GL_STATIC_DRAW);
+	for (size_t i = 0; i < mesh->mNumVertices; i++)
+	{
+		vertices.insert(vertices.end(), { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z });
+		if (mesh->mTextureCoords[0])
+		{
+			vertices.insert(vertices.end(), { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y });
+		}
+		else {
+			vertices.insert(vertices.end(), { 0.0f, 0.0f });
+		}
+		vertices.insert(vertices.end(), { -mesh->mNormals[i].x, -mesh->mNormals[i].y, -mesh->mNormals[i].z });
+	}
 
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * numOfVertices, vertices, GL_STATIC_DRAW);
+	//1 Face = 3 indices die dan dus samen een "face" maken
+	for (size_t i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace face = mesh->mFaces[i];
+		for (size_t j = 0; j < face.mNumIndices; j++)
+		{
+			indices.push_back(face.mIndices[j]);
+		}
+	}
 
+	Mesh* newMesh = new Mesh();
+	newMesh->createMesh(&vertices[0], &indices[0], vertices.size(), indices.size(), false);
+	meshList.push_back(newMesh);
+	meshToTex.push_back(mesh->mMaterialIndex);
+}
+
+void GameObject::LoadMaterials(const aiScene* scene)
+{
+	textureList.resize(scene->mNumMaterials);
 	
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	for (size_t i = 0; i < scene->mNumMaterials; i++)
+	{
+		aiMaterial* material = scene->mMaterials[i];
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		textureList[i] = nullptr;
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
-	glGenerateMipmap(GL_TEXTURE_2D);
+		if (material->GetTextureCount(aiTextureType_DIFFUSE))
+		{
+			aiString path;
+			std::cout << "textureTest" << std::endl;
 
-	//position vertices
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, 0);
-	glEnableVertexAttribArray(0);
+			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+			{
+				int idx = std::string(path.data).rfind("\\");
+				std::string filename = std::string(path.data).substr(idx + 1);
+				
+				std::string texPath = std::string("Textures/" + filename);
 
-	//texture vertices
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 3));
-	glEnableVertexAttribArray(1);
+				textureList[i] = new Texture(texPath.c_str());
 
-	//normals
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 5));
-	glEnableVertexAttribArray(2);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+				if (!textureList[i]->LoadTexture())
+				{
+					printf("Failed to load texture at: %s\n", texPath);
+					delete textureList[i];
+					textureList[i] = nullptr;
+				}
+			}
+		}
 
-	glBindVertexArray(0);
+		if (!textureList[i])
+		{
+			textureList[i] = new Texture("Textures/not_found.png");
+			textureList[i]->LoadTexture();
+		}
+	}
+}
 
+void GameObject::createMeshFromScratch(GLfloat * vertices, char* textureLocation, unsigned int * indices, unsigned int numOfVertices, unsigned int numOfIndices, bool useAlphaTexture, bool calculateNormals)
+{
+	Mesh* mesh = new Mesh();
+	Texture* tex = new Texture(textureLocation);
+	mesh->createMesh(vertices, indices, numOfVertices, numOfIndices, calculateNormals);
+
+	if (useAlphaTexture)
+	{
+		tex->LoadTextureA();
+	}
+	else 
+	{
+		tex->LoadTexture();
+	}
+
+	rawMesh.push_back(mesh);
+	rawTexture.push_back(tex);
 }
 
 void GameObject::renderModel()
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	if (rawMesh.size() > 0)
+	{
+		rawTexture[0]->RenderTexture();
+		rawMesh[0]->renderMesh();
+	}
+	else if (meshList.size() > 0)
+	{
+		for (size_t i = 0; i < meshList.size(); i++)
+		{
+			unsigned int materialIndex = meshToTex[i];
+
+			if (materialIndex < textureList.size() && textureList[materialIndex])
+			{
+				textureList[materialIndex]->RenderTexture();
+			}
+
+			meshList[i]->renderMesh();
+		}
+	}
 }
 
-GLfloat* GameObject::calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount,
-	unsigned int vLength, unsigned int normalOffset)
-{
-	for (size_t i = 0; i < indiceCount; i += 3)
-	{
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i + 1] * vLength;
-		unsigned int in2 = indices[i + 2] * vLength;
-		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
-		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
-		glm::vec3 normal = glm::cross(v1, v2);
-		normal = glm::normalize(normal);
-
-		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
-		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
-		vertices[in1] += normal.x; vertices[in1 + 1] += normal.y; vertices[in1 + 2] += normal.z;
-		vertices[in2] += normal.x; vertices[in2 + 1] += normal.y; vertices[in2 + 2] += normal.z;
-	}
-
-	for (size_t i = 0; i < verticeCount / vLength; i++)
-	{
-		unsigned int nOffset = i * vLength + normalOffset;
-		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
-		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
-	}
-
-	return vertices;
-}
-
-glm::mat4 GameObject::Transform(glm::mat4 model, glm::vec3 position, glm::vec3 scale, glm::vec3 eulerAngle)
+void GameObject::Transform(glm::mat4& model)
 {
 	model = glm::translate(model, position);
 
@@ -145,12 +199,10 @@ glm::mat4 GameObject::Transform(glm::mat4 model, glm::vec3 position, glm::vec3 s
 		if (rotation.z < 0) { rotation.z += 360; } else if (rotation.z > 360) { rotation.z -= 360; }
 	}
 	
-	glm::mat4 rotationMatrix = glm::toMat4(glm::quat(glm::radians(eulerAngle)));
+	glm::mat4 rotationMatrix = glm::toMat4(glm::quat(glm::radians(rotation)));
 
 	model *= rotationMatrix;
 	model = glm::scale(model, scale);
-
-	return model;
 }
 
 void GameObject::calculateMouseMovement(GLfloat mouseXChange, GLfloat mouseYChange)
@@ -171,7 +223,7 @@ void GameObject::calculateMouseMovement(GLfloat mouseXChange, GLfloat mouseYChan
 	front.y = sin(glm::radians(rotation.y));
 	front.z = sin(glm::radians(rotation.x)) * cos(glm::radians(rotation.y));
 	front = glm::normalize(front);
-
+	
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 
@@ -252,7 +304,6 @@ GLuint GameObject::getUniformLocation(uniform location)
 
 void GameObject::clearModel()
 {
-	std::cout << "clearing OGL Objects" << std::endl;
 	if (IBO != 0)
 	{
 		glDeleteBuffers(1, &IBO);
@@ -283,6 +334,36 @@ void GameObject::clearModel()
 	textureLocation = 0;
 
 	indexCount = 0;
+
+	for (size_t i = 0; i < meshList.size(); i++)
+	{
+		if (meshList[i])
+		{
+			delete meshList[i];
+			meshList[i] = nullptr;
+		}
+	}
+
+	for (size_t i = 0; i < textureList.size(); i++)
+	{
+		if (textureList[i])
+		{
+			delete textureList[i];
+			textureList[i] = nullptr;
+		}
+	}
+
+	if (!rawMesh.empty())
+	{
+		delete rawMesh[0];
+		rawMesh[0] = nullptr;
+	}
+
+	if (!rawTexture.empty())
+	{
+		delete rawTexture[0];
+		rawTexture[0] = nullptr;
+	}
 }
 
 GameObject::~GameObject()

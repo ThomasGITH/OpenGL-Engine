@@ -10,7 +10,7 @@ class TestObject : public GameObject
 public:
 	TestObject();
 
-	virtual glm::mat4 Update(glm::mat4 model) override;
+	//virtual glm::mat4 Update(glm::mat4 model) override;
 
 	~TestObject();
 private:

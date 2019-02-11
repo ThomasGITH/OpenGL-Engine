@@ -27,8 +27,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Dragon.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Flashlight.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
       <Filter>Source Files</Filter>
@@ -36,54 +39,90 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Locator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sun.cpp">
-      <Filter>Source Files\ObjectCPP%27s</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\ObjectCPP%27s</Filter>
-    </ClCompile>
-    <ClCompile Include="Test.cpp">
+    <ClCompile Include="Lantern.cpp">
       <Filter>Source Files\ObjectCPP%27s</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\ComponentCPP%27s</Filter>
     </ClCompile>
+    <ClCompile Include="Locator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\ComponentCPP%27s</Filter>
     </ClCompile>
-    <ClCompile Include="Lantern.cpp">
-      <Filter>Source Files\ObjectCPP%27s</Filter>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Platform.cpp">
       <Filter>Source Files\ObjectCPP%27s</Filter>
     </ClCompile>
-    <ClCompile Include="Flashlight.cpp">
+    <ClCompile Include="Player.cpp">
       <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sun.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Source Files\ObjectCPP%27s</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Commons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dragon.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Flashlight.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
     <ClInclude Include="GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Lantern.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\ComponentHeaders</Filter>
+    </ClInclude>
     <ClInclude Include="Locator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\ComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\ObjectHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sun.h">
@@ -92,26 +131,18 @@
     <ClInclude Include="Test.h">
       <Filter>Header Files\ObjectHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\ObjectHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Header Files\ComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\ComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Commons.h">
+    <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lantern.h">
-      <Filter>Header Files\ObjectHeaders</Filter>
+    <ClInclude Include="game_objects_incl.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Platform.h">
-      <Filter>Header Files\ObjectHeaders</Filter>
+    <ClInclude Include="TestObject.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Flashlight.h">
-      <Filter>Header Files\ObjectHeaders</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\shader.frag" />
+    <None Include="Shaders\shader.vert" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,6 @@
 #include <iostream>
 #include <glm\glm.hpp>
 
-
 Test::Test(glm::vec3 position, float startAngle, char* textureLocation)
 {
 
@@ -23,26 +22,23 @@ Test::Test(glm::vec3 position, float startAngle, char* textureLocation)
 		0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
 	};
 
-	createModel(vertices, textureLocation, indices, 32, 12, true);
+	createMeshFromScratch(vertices, textureLocation, indices, 32, 12, true, true);
 
 	this->position = position;
 
-	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
 	setMaterialType(SHINY);
+	scale *= 10;
 
 	moveSpeed = 3.0f;
 }
 
-glm::mat4 Test::Update(glm::mat4 model, bool* keys, GLfloat deltaTime)
+void Test::Update(const bool * keys, const GLfloat& deltaTime)
 {
-
 	rotation.y += 0.27f;
-
+	
 	float velocity = moveSpeed * deltaTime;
 
 	useMaterial(getUniformLocation(SPECULAR_INTENSITY), getUniformLocation(SPECULAR_SHINYNESS));
-	return Transform(model, position, scale, rotation);
 }
 
 

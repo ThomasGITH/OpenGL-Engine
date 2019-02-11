@@ -9,7 +9,7 @@ public:
 	Sun(){}
 	Sun(glm::vec3 colour, GLfloat ambientIntensity, glm::vec3 direction, GLfloat diffuseIntensity);
 	
-	virtual glm::mat4 Update(glm::mat4 model, bool* keys, GLfloat deltaTime) override;
+	void Update(const bool* keys, const GLfloat& deltaTime) override;
 
 	~Sun();
 private:
