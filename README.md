@@ -4,6 +4,6 @@ An OpenGL-powered 3D game engine made using C++ and a variety of libraries inclu
 
 To clarify the (real) purpose of this project: It was made over the course of a couple of months and served as a way for me to both learn OpenGL and to gain more experience using C++. It was never actually intended to be used in practice. It was simply a learning experience.
 
-##### As of shortly before 9-11-2019 I have stopped working on this project and have moved on to other projects which may/may not also include OpenGL.
+##### As of shortly before 9-11-2019 I have stopped working on this particular project
 
 ![e0c8e9c044cb32d7e516cbfd3aed00d4_1070x616](https://user-images.githubusercontent.com/31830553/68535892-d177b280-0349-11ea-938e-23ccef522f57.png)
